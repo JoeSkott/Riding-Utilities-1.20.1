@@ -45,6 +45,7 @@ public class RidingUtils
         if(event.getTabKey() == CreativeModeTabs.INGREDIENTS) {
             event.accept(ModItems.TEST_ITEM);
             event.accept(ModItems.TEST_ITEM_2);
+            event.accept(ModItems.METAL_DETECTOR);
         }
     }
 
