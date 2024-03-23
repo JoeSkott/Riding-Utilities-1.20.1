@@ -1,6 +1,8 @@
 package net.joeskott.ridingutils;
 
 import com.mojang.logging.LogUtils;
+import net.joeskott.ridingutils.item.ModItems;
+import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
@@ -25,6 +27,9 @@ public class RidingUtils
     public RidingUtils() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
+        // Register Items
+        ModItems.register(modEventBus);
+
         modEventBus.addListener(this::commonSetup);
 
         MinecraftForge.EVENT_BUS.register(this);
@@ -37,7 +42,10 @@ public class RidingUtils
 
     // Add the example block item to the building blocks tab
     private void addCreative(BuildCreativeModeTabContentsEvent event) {
-
+        if(event.getTabKey() == CreativeModeTabs.INGREDIENTS) {
+            event.accept(ModItems.TEST_ITEM);
+            event.accept(ModItems.TEST_ITEM_2);
+        }
     }
 
     // You can use SubscribeEvent and let the Event Bus discover methods to call
