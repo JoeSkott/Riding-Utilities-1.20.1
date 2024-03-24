@@ -51,6 +51,10 @@ public class RidingUtils
             event.accept(ModItems.TEST_ITEM_2);
             event.accept(ModItems.METAL_DETECTOR);
         }
+
+        if(event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
+            event.accept(ModItems.LASSO);
+        }
     }
 
     // You can use SubscribeEvent and let the Event Bus discover methods to call
