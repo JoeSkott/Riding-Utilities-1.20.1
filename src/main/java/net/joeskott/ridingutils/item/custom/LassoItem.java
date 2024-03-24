@@ -2,7 +2,10 @@ package net.joeskott.ridingutils.item.custom;
 
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.AgeableMob;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -16,9 +19,11 @@ public class LassoItem extends Item {
     }
 
     Random random = new Random();
+
     int damageChance = 10;
     int damageOnUse = 1;
 
+    // Add Damage Handler
     @Override
     public InteractionResultHolder<ItemStack> use(Level pLevel, Player pPlayer, InteractionHand pUsedHand) {
 
@@ -41,6 +46,30 @@ public class LassoItem extends Item {
         }
 
         return super.use(pLevel, pPlayer, pUsedHand);
+    }
+
+    @Override
+    public InteractionResult interactLivingEntity(ItemStack pStack, Player pPlayer, LivingEntity pInteractionTarget, InteractionHand pUsedHand) {
+        // Interaction Start
+        if(!pPlayer.level().isClientSide()) {
+            if(!pPlayer.isPassenger()) {
+                boolean isAdult = true;
+                boolean ageable = pInteractionTarget instanceof AgeableMob;
+
+                if(ageable) {
+                    if(((AgeableMob) pInteractionTarget).getAge() < 0) {
+                        isAdult = false;
+                    }
+                }
+
+                if(isAdult) {
+                    pPlayer.startRiding(pInteractionTarget);
+                    pInteractionTarget.playSound(SoundEvents.PIG_SADDLE, 1.0f, 1.0f);
+                }
+            }
+        }
+
+        return super.interactLivingEntity(pStack, pPlayer, pInteractionTarget, pUsedHand);
     }
 
     private void addItemDamage(Player player, ItemStack item, int damageOnUse) {
