@@ -5,19 +5,27 @@ import net.joeskott.ridingutils.config.RidingUtilsCommonConfigs;
 import net.joeskott.ridingutils.item.ModItems;
 import net.joeskott.ridingutils.resource.ModMethods;
 import net.joeskott.ridingutils.sound.ModSounds;
+import net.minecraft.core.Holder;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageType;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.animal.horse.Horse;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
+import java.util.Optional;
 import java.util.Random;
 
 public class WhipItem extends Item {
@@ -75,6 +83,7 @@ public class WhipItem extends Item {
 
             int maxDamage = itemSelf.getMaxDamage(); //TODO
             int currentDamage = itemSelf.getDamageValue(); //TODO
+            int chanceRange = (maxDamage - currentDamage + 1)/2;
 
             boolean onGround = playerMount.onGround();
             boolean inWater = playerMount.isInWater();
@@ -101,7 +110,7 @@ public class WhipItem extends Item {
 
                 // Handle damage
                 ModMethods.addItemDamage(pPlayer, itemSelf, damageOnUse);
-                //rollForHPDamage
+                rollForHPDamage(pPlayer, playerMount, chanceRange, currentDamage, maxDamage);
                 addSpeed(playerMount, effectAmplifier, durationOfEffect);
             }
 
@@ -118,6 +127,62 @@ public class WhipItem extends Item {
         }
 
         return super.use(pLevel, pPlayer, pUsedHand);
+    }
+
+    private void rollForHPDamage(Player pPlayer, Entity entity, int chanceRange, int currentDamage, int maxDamage) {
+        int roll = random.nextInt(chanceRange);
+        if(currentDamage < damageCheck || roll != 0) {
+            doHurt(entity, pPlayer, 0.0f);
+        } else {
+            doRealDamageAndSideEffects(pPlayer, entity);
+        }
+    }
+
+    private void doRealDamageAndSideEffects(Player pPlayer, Entity entity) {
+        ejectPlayer = random.nextBoolean();
+        float hurtAmount = random.nextFloat(2.0f);
+        doHurt(entity, pPlayer, hurtAmount);
+    }
+
+    private void doHurt(Entity entity, Player player, float hurtAmount) {
+        if(!entity.onGround()) {
+            return;
+        }
+
+        if(entity instanceof LivingEntity) {
+            LivingEntity livingEntity = ((LivingEntity) entity);
+            boolean isHorse = entity instanceof Horse;
+
+            if(showDamage){
+                Boolean chance = random.nextInt(3) == 0;
+                if(chance) {
+                    livingEntity.hurt(player.damageSources().generic(), hurtAmount);
+                }
+            }
+
+
+            /*if (hurtAmount > 0 || !isHorse) {
+                if(hurtAmount < 1.0f && !showDamage){
+                    return;
+                }
+
+            } else */
+            if (isHorse) {
+                int bound = 3;
+                if(!showDamage) {
+                    bound = 2;
+                }
+
+                int choose = random.nextInt(bound);
+                float pitch = getVariablePitch(0.3f);
+
+                switch (choose) {
+                    case 0 -> entity.playSound(SoundEvents.HORSE_ANGRY, 1.0f, pitch);
+                    case 1 -> entity.playSound(SoundEvents.HORSE_BREATHE, 1.0f, pitch);
+                    case 2 -> entity.playSound(SoundEvents.HORSE_HURT, 1.0f, pitch);
+                }
+            }
+        }
     }
 
     private void buckPlayer(Player player, Entity playerMount) {

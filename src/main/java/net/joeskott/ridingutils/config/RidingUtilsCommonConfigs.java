@@ -45,8 +45,8 @@ public class RidingUtilsCommonConfigs {
         whipWaterCooldownTicks = BUILDER.comment("How many ticks for whip cooldown when it's used in water? (Defaults to 120 or 5 seconds)")
                 .defineInRange("Whip Water Cooldown", 120, 1, 99999999);
 
-        whipShowsDamage = BUILDER.comment("Does the whip occasionally cause faux damage even when repaired? (Defaults to false)")
-                .define("Whip Fake Damage", false);
+        whipShowsDamage = BUILDER.comment("Does the whip occasionally cause faux damage even when repaired? (Defaults to true)")
+                .define("Whip Fake Damage", true);
 
         whipBuck = BUILDER.comment("Does the whip have a chance to buck off the rider? (Defaults to true)")
                 .define("Whip Buck Chance", true);
