@@ -81,8 +81,8 @@ public class WhipItem extends Item {
 
             boolean offhandIsLasso = itemOffhand.is(ModItems.LASSO.get());
 
-            int maxDamage = itemSelf.getMaxDamage(); //TODO
-            int currentDamage = itemSelf.getDamageValue(); //TODO
+            int maxDamage = itemSelf.getMaxDamage();
+            int currentDamage = itemSelf.getDamageValue();
             int chanceRange = (maxDamage - currentDamage + 1)/2;
 
             boolean onGround = playerMount.onGround();

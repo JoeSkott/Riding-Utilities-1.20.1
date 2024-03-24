@@ -2,6 +2,7 @@ package net.joeskott.ridingutils.world;
 
 
 import net.joeskott.ridingutils.RidingUtils;
+import net.joeskott.ridingutils.config.RidingUtilsCommonConfigs;
 import net.minecraft.core.BlockPos;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Mth;
@@ -24,7 +25,7 @@ public class ModWorldEvents {
 
     @SubscribeEvent
     public static void playerTick(final TickEvent.PlayerTickEvent event) {
-        Boolean horsesSwim = true; //TODO may config
+        Boolean horsesSwim = RidingUtilsCommonConfigs.horsesSwimNaturally.get();
 
         if(event.phase == TickEvent.Phase.END && horsesSwim) {
             Player player = event.player;
