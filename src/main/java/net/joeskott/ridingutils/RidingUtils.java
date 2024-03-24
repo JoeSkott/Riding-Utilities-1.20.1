@@ -46,11 +46,6 @@ public class RidingUtils
 
     // Add the example block item to the building blocks tab
     private void addCreative(BuildCreativeModeTabContentsEvent event) {
-        if(event.getTabKey() == CreativeModeTabs.INGREDIENTS) {
-            event.accept(ModItems.TEST_ITEM);
-            event.accept(ModItems.TEST_ITEM_2);
-        }
-
         if(event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
             event.accept(ModItems.LASSO);
             event.accept(ModItems.WHIP);
