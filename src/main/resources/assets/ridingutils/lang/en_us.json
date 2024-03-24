@@ -1,10 +1,6 @@
 {
-  "item.ridingutils.testitem": "Test Item",
-  "item.ridingutils.testitem2": "Test Item 2",
-  "item.ridingutils.metal_detector": "Metal Detector",
   "item.ridingutils.lasso": "Lasso",
   "item.ridingutils.whip": "Whip",
 
-
-  "sounds.ridingutils.metal_detector_found_ore": "Metal Detector Sound"
+  "sounds.ridingutils.whip_cracked": "Whip Cracked"
 }

@@ -14,7 +14,6 @@ public class ModSounds {
 
 
     // Register sounds
-    public static final RegistryObject<SoundEvent> METAL_DETECTOR_FOUND_ORE = registerSoundEvents("metal_detector_found_ore");
     public static final RegistryObject<SoundEvent> WHIP_CRACKED = registerSoundEvents("whip_cracked");
 
 

@@ -1,10 +1,4 @@
 {
-  "metal_detector_found_ore": {
-    "subtitles": "sounds.ridingutils.metal_detector_found_ore",
-    "sounds": [
-      "ridingutils:metal_detector_found_ore"
-    ]
-  },
   "whip_cracked": {
     "subtitles": "sounds.ridingutils.whip_cracked",
     "sounds": [
