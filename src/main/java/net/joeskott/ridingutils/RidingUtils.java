@@ -2,6 +2,7 @@ package net.joeskott.ridingutils;
 
 import com.mojang.logging.LogUtils;
 import net.joeskott.ridingutils.item.ModItems;
+import net.joeskott.ridingutils.sound.ModSounds;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
@@ -29,6 +30,9 @@ public class RidingUtils
 
         // Register Items
         ModItems.register(modEventBus);
+
+        // Register Sounds
+        ModSounds.register(modEventBus);
 
         modEventBus.addListener(this::commonSetup);
 
