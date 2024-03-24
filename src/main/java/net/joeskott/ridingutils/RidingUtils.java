@@ -54,6 +54,7 @@ public class RidingUtils
 
         if(event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
             event.accept(ModItems.LASSO);
+            event.accept(ModItems.WHIP);
         }
     }
 

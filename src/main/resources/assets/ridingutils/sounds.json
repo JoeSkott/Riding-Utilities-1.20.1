@@ -4,5 +4,12 @@
     "sounds": [
       "ridingutils:metal_detector_found_ore"
     ]
+  },
+  "whip_cracked": {
+    "subtitles": "sounds.ridingutils.whip_cracked",
+    "sounds": [
+      "ridingutils:whip",
+      "ridingutils:whip2"
+    ]
   }
 }

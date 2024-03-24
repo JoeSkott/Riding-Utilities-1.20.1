@@ -3,6 +3,7 @@ package net.joeskott.ridingutils.item;
 import net.joeskott.ridingutils.RidingUtils;
 import net.joeskott.ridingutils.item.custom.LassoItem;
 import net.joeskott.ridingutils.item.custom.MetalDetectorItem;
+import net.joeskott.ridingutils.item.custom.WhipItem;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
@@ -25,6 +26,9 @@ public class ModItems {
 
     public static final RegistryObject<Item> LASSO = ITEMS.register("lasso",
             () -> new LassoItem(new Item.Properties().durability(64)));
+
+    public static final RegistryObject<Item> WHIP = ITEMS.register("whip",
+            () -> new WhipItem(new Item.Properties().durability(256)));
 
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);

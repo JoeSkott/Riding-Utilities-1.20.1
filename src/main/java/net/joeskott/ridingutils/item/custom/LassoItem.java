@@ -1,6 +1,7 @@
 package net.joeskott.ridingutils.item.custom;
 
 import net.joeskott.ridingutils.item.ModItems;
+import net.joeskott.ridingutils.resource.ModMethods;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
@@ -12,8 +13,6 @@ import net.minecraft.world.entity.animal.WaterAnimal;
 import net.minecraft.world.entity.animal.horse.Horse;
 import net.minecraft.world.entity.monster.Spider;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.vehicle.Boat;
-import net.minecraft.world.entity.vehicle.Minecart;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -36,7 +35,7 @@ public class LassoItem extends Item {
 
     double jumpHeight = 0.5d;
     double speedEffectMultiplier = 2.0d;
-    float flightMotionMultiplier = 1.5f;
+    float flightMotionMultiplier = 1.3f;
     double waterMobBoost = 0.01d;
 
     // Motion and Damage Handler
@@ -57,10 +56,10 @@ public class LassoItem extends Item {
             ItemStack itemSelf = pPlayer.getItemInHand(pUsedHand);
             ItemStack itemOffhand = pPlayer.getOffhandItem();
 
-            boolean offhandIsWhip = false; //TODO change this later
+            boolean offhandIsWhip = itemOffhand.is(ModItems.WHIP.get());
             boolean offhandIsSelf = itemOffhand.is(this);
             boolean isControllable = playerMount instanceof Saddleable;
-            boolean cancelMotion = !itemSelf.is(ModItems.LASSO.get()) || offhandIsWhip || offhandIsSelf || isPhysicalVehicle(playerMount) || isControllable;
+            boolean cancelMotion = !itemSelf.is(ModItems.LASSO.get()) || offhandIsWhip || offhandIsSelf || ModMethods.isPhysicalVehicle(playerMount) || isControllable;
 
 
             // Don't apply effects if on a horse TODO: potentially change later
@@ -72,7 +71,7 @@ public class LassoItem extends Item {
 
             // Add damage random chance
             if(random.nextInt(damageChance) == 0) {
-                addItemDamage(pPlayer, itemSelf, damageOnUse);
+                ModMethods.addItemDamage(pPlayer, itemSelf, damageOnUse);
                 pPlayer.playSound(SoundEvents.LEASH_KNOT_BREAK, 0.2f, 1f);
             }
 
@@ -209,12 +208,12 @@ public class LassoItem extends Item {
         //return blockState.isSolidRender(entity.level(), collidePos);
     }
 
-    private boolean isPhysicalVehicle(Entity entity) {
+    /*public static boolean isPhysicalVehicle(Entity entity) {
         if(entity instanceof Boat || entity instanceof Minecart) {
             return true;
         }
         return false;
-    }
+    }*/
 
     @Override
     public InteractionResult interactLivingEntity(ItemStack pStack, Player pPlayer, LivingEntity pInteractionTarget, InteractionHand pUsedHand) {
@@ -240,13 +239,14 @@ public class LassoItem extends Item {
         return super.interactLivingEntity(pStack, pPlayer, pInteractionTarget, pUsedHand);
     }
 
-    private void addItemDamage(Player player, ItemStack item, int damageOnUse) {
+    /*private void addItemDamage(Player player, ItemStack item, int damageOnUse) {
         item.hurtAndBreak(
                 damageOnUse,
                 player,
                 (pPlayer) -> pPlayer.broadcastBreakEvent(pPlayer.getUsedItemHand())
         );
     }
+    */
 
 
 }
