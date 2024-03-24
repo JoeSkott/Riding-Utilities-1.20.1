@@ -125,7 +125,7 @@ public class WhipItem extends Item {
 
     private void activateWhipSound(Entity entity) {
         entity.level().playSeededSound(null, entity.getX(), entity.getY(), entity.getZ(),
-                ModSounds.WHIP_CRACKED.get(), SoundSource.BLOCKS, 1f, getVariablePitch(0.4f), 0);
+                ModSounds.WHIP_CRACKED.get(), SoundSource.BLOCKS, 1f, getVariablePitch(0.4f) - 0.4f, 0);
     }
 
     private void addMotion(Entity entity) {

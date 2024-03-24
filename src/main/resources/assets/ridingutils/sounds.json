@@ -3,7 +3,8 @@
     "subtitles": "sounds.ridingutils.whip_cracked",
     "sounds": [
       "ridingutils:whip",
-      "ridingutils:whip2"
+      "ridingutils:whip2",
+      "ridingutils:whip3"
     ]
   }
 }

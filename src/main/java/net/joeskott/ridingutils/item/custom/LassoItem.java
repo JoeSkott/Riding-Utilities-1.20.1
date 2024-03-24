@@ -34,7 +34,7 @@ public class LassoItem extends Item {
     int damageOnUse = 1;
 
     double jumpHeight = 0.5d;
-    double speedEffectMultiplier = 2.0d;
+    double speedEffectMultiplier = 1.2d;
     float flightMotionMultiplier = 1.3f;
     double waterMobBoost = 0.01d;
 
@@ -59,7 +59,8 @@ public class LassoItem extends Item {
             boolean offhandIsWhip = itemOffhand.is(ModItems.WHIP.get());
             boolean offhandIsSelf = itemOffhand.is(this);
             boolean isControllable = playerMount instanceof Saddleable;
-            boolean cancelMotion = !itemSelf.is(ModItems.LASSO.get()) || offhandIsWhip || offhandIsSelf || ModMethods.isPhysicalVehicle(playerMount) || isControllable;
+            boolean cancelMotion = !itemSelf.is(ModItems.LASSO.get()) || offhandIsWhip || ModMethods.isPhysicalVehicle(playerMount) || isControllable;
+            //boolean cancelMotion = !itemSelf.is(ModItems.LASSO.get()) || offhandIsWhip || offhandIsSelf || ModMethods.isPhysicalVehicle(playerMount) || isControllable;
 
 
             // Don't apply effects if on a horse TODO: potentially change later
