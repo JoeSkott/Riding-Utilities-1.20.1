@@ -1,5 +1,6 @@
 package net.joeskott.ridingutils.item.custom;
 
+import net.joeskott.ridingutils.config.RidingUtilsCommonConfigs;
 import net.joeskott.ridingutils.item.ModItems;
 import net.joeskott.ridingutils.resource.ModMethods;
 import net.minecraft.core.BlockPos;
@@ -50,6 +51,7 @@ public class LassoItem extends Item {
                 return super.use(pLevel, pPlayer, pUsedHand);
             }
 
+            updateValuesFromConfig();
 
             // Set variables
             Entity playerMount = pPlayer.getVehicle();
@@ -209,13 +211,6 @@ public class LassoItem extends Item {
         //return blockState.isSolidRender(entity.level(), collidePos);
     }
 
-    /*public static boolean isPhysicalVehicle(Entity entity) {
-        if(entity instanceof Boat || entity instanceof Minecart) {
-            return true;
-        }
-        return false;
-    }*/
-
     @Override
     public InteractionResult interactLivingEntity(ItemStack pStack, Player pPlayer, LivingEntity pInteractionTarget, InteractionHand pUsedHand) {
         // Interaction Start
@@ -233,6 +228,7 @@ public class LassoItem extends Item {
                 if(isAdult) {
                     pPlayer.startRiding(pInteractionTarget);
                     pInteractionTarget.playSound(SoundEvents.PIG_SADDLE, 1.0f, 1.0f);
+                    updateValuesFromConfig();
                 }
             }
         }
@@ -240,14 +236,11 @@ public class LassoItem extends Item {
         return super.interactLivingEntity(pStack, pPlayer, pInteractionTarget, pUsedHand);
     }
 
-    /*private void addItemDamage(Player player, ItemStack item, int damageOnUse) {
-        item.hurtAndBreak(
-                damageOnUse,
-                player,
-                (pPlayer) -> pPlayer.broadcastBreakEvent(pPlayer.getUsedItemHand())
-        );
+    private void updateValuesFromConfig() {
+        jumpHeight = RidingUtilsCommonConfigs.lassoJumpHeight.get();
+        speedEffectMultiplier = RidingUtilsCommonConfigs.lassoWhipSpeedBoost.get();
     }
-    */
+
 
 
 }

@@ -1,6 +1,8 @@
 package net.joeskott.ridingutils;
 
 import com.mojang.logging.LogUtils;
+import net.joeskott.ridingutils.config.RidingUtilsClientConfigs;
+import net.joeskott.ridingutils.config.RidingUtilsCommonConfigs;
 import net.joeskott.ridingutils.item.ModItems;
 import net.joeskott.ridingutils.sound.ModSounds;
 import net.minecraft.world.item.CreativeModeTabs;
@@ -10,7 +12,9 @@ import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -27,6 +31,11 @@ public class RidingUtils
 
     public RidingUtils() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+
+        // Config
+        //ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, RidingUtilsClientConfigs.SPEC, "ridingutilities-client.toml");
+        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, RidingUtilsCommonConfigs.SPEC, "ridingutilities-common.toml");
+
 
         // Register Items
         ModItems.register(modEventBus);

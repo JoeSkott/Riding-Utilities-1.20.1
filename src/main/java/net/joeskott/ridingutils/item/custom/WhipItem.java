@@ -1,5 +1,7 @@
 package net.joeskott.ridingutils.item.custom;
 
+import net.joeskott.ridingutils.config.RidingUtilsClientConfigs;
+import net.joeskott.ridingutils.config.RidingUtilsCommonConfigs;
 import net.joeskott.ridingutils.item.ModItems;
 import net.joeskott.ridingutils.resource.ModMethods;
 import net.joeskott.ridingutils.sound.ModSounds;
@@ -60,6 +62,8 @@ public class WhipItem extends Item {
             if(ModMethods.isPhysicalVehicle(pPlayer.getVehicle())) {
                 return super.use(pLevel, pPlayer, pUsedHand);
             }
+
+            updateValuesFromConfig();
 
             Entity playerMount = pPlayer.getVehicle();
 
@@ -163,5 +167,15 @@ public class WhipItem extends Item {
     private float getVariablePitch(float maxVariance) {
         float pitchAdjust = random.nextFloat(maxVariance) - random.nextFloat(maxVariance);
         return 1.2f + pitchAdjust;
+    }
+
+    private void updateValuesFromConfig() {
+        cooldownTicks = RidingUtilsCommonConfigs.whipCooldownTicks.get();
+        waterCooldownTicks = RidingUtilsCommonConfigs.whipWaterCooldownTicks.get();
+        damageCheck = RidingUtilsCommonConfigs.whipDangerStart.get();
+        durationOfEffect = RidingUtilsCommonConfigs.whipEffectDuration.get();
+        doBuckPlayer = RidingUtilsCommonConfigs.whipBuck.get();
+        showDamage = RidingUtilsCommonConfigs.whipShowsDamage.get();
+        effectAmplifier = RidingUtilsCommonConfigs.whipControllableSpeedAmplifier.get();
     }
 }
