@@ -4,7 +4,7 @@
   "pattern": [
     "# D",
     " SL",
-    "SLS"
+    " LS"
   ],
   "key": {
     "S": {
@@ -14,10 +14,10 @@
       "item": "minecraft:leather"
     },
     "#": {
-      "item": "minecraft:rabbit_hide"
+      "item": "minecraft:sugar"
     },
     "D": {
-      "item": "minecraft:diamond"
+      "item": "minecraft:echo_shard"
     }
   },
   "result": {
