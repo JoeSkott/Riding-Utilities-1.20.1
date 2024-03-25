@@ -1,6 +1,7 @@
 {
-  "item.ridingutils.lasso": "Lasso",
-  "item.ridingutils.whip": "Whip",
+  "item.ridingutils.lasso": "Rider's Lasso",
+  "item.ridingutils.whip": "Riding Whip",
 
-  "sounds.ridingutils.whip_cracked": "Whip Cracked"
+  "sounds.ridingutils.whip_cracked": "Whip Cracked",
+  "sounds.ridingutils.whip_frenzy": "Whip Cracked Intense"
 }

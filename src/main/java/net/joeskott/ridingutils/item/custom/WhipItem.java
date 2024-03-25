@@ -1,19 +1,15 @@
 package net.joeskott.ridingutils.item.custom;
 
-import net.joeskott.ridingutils.config.RidingUtilsClientConfigs;
 import net.joeskott.ridingutils.config.RidingUtilsCommonConfigs;
 import net.joeskott.ridingutils.item.ModItems;
 import net.joeskott.ridingutils.resource.ModMethods;
 import net.joeskott.ridingutils.sound.ModSounds;
-import net.minecraft.core.Holder;
-import net.minecraft.resources.ResourceKey;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
-import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.damagesource.DamageType;
-import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
@@ -25,7 +21,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
-import java.util.Optional;
 import java.util.Random;
 
 public class WhipItem extends Item {
@@ -35,6 +30,7 @@ public class WhipItem extends Item {
 
     Random random = new Random();
 
+
     boolean ejectPlayer = false;
 
     int damageOnUse = 1;
@@ -43,18 +39,26 @@ public class WhipItem extends Item {
 
     int waterCooldownTicks = 100;
 
+    int frenziedCooldownTicks = 80;
+
     int damageCheck = 32;
 
     int durationOfEffect = 120;
+    int durationOfCompoundEffect = 75;
 
     boolean doBuckPlayer = true;
 
     boolean showDamage = false;
 
-    int effectAmplifier = 2;
+    boolean displayState = true;
+
+    int fastAmplifier = 2;
+    int ultraFastAmplifier = 3;
+    int frenzyAmplifier = 7;
 
     double motionBoost = 0.4d;
     double waterMotionBoost = 0.4d;
+
 
     @Override
     public InteractionResultHolder<ItemStack> use(Level pLevel, Player pPlayer, InteractionHand pUsedHand) {
@@ -99,7 +103,12 @@ public class WhipItem extends Item {
 
             // Do activation
             if(onGround || inWater){
-                activateWhipSound(playerMount);
+                if(ModMethods.getWhipState(playerMount) > 0) {
+                    activateFrenzySound(playerMount);
+                } else {
+                    activateWhipSound(playerMount);
+                }
+
 
                 // Handle cooldowns
                 if(onGround) {
@@ -111,13 +120,13 @@ public class WhipItem extends Item {
                 // Handle damage
                 ModMethods.addItemDamage(pPlayer, itemSelf, damageOnUse);
                 rollForHPDamage(pPlayer, playerMount, chanceRange, currentDamage, maxDamage);
-                addSpeed(playerMount, effectAmplifier, durationOfEffect);
+                //addSpeed(playerMount, effectAmplifier, durationOfEffect);
+                addVariableEffect(playerMount, pPlayer, durationOfEffect);
             }
 
             // Handle buck
             if(ejectPlayer && doBuckPlayer) {
                 // Called if bad stuff happened oops
-                playerMount.ejectPassengers();
                 buckPlayer(pPlayer, playerMount);
                 ejectPlayer = false;
             } else if (ejectPlayer) {
@@ -131,9 +140,7 @@ public class WhipItem extends Item {
 
     private void rollForHPDamage(Player pPlayer, Entity entity, int chanceRange, int currentDamage, int maxDamage) {
         int roll = random.nextInt(chanceRange);
-        if(currentDamage < damageCheck || roll != 0) {
-            doHurt(entity, pPlayer, 0.0f);
-        } else {
+        if(currentDamage >= damageCheck && roll == 0) {
             doRealDamageAndSideEffects(pPlayer, entity);
         }
     }
@@ -153,20 +160,15 @@ public class WhipItem extends Item {
             LivingEntity livingEntity = ((LivingEntity) entity);
             boolean isHorse = entity instanceof Horse;
 
-            if(showDamage){
+            /*if(showDamage){
                 Boolean chance = random.nextInt(3) == 0;
                 if(chance) {
                     livingEntity.hurt(player.damageSources().generic(), hurtAmount);
                 }
-            }
+            }*/
 
+            livingEntity.hurt(player.damageSources().generic(), hurtAmount);
 
-            /*if (hurtAmount > 0 || !isHorse) {
-                if(hurtAmount < 1.0f && !showDamage){
-                    return;
-                }
-
-            } else */
             if (isHorse) {
                 int bound = 3;
                 if(!showDamage) {
@@ -186,6 +188,7 @@ public class WhipItem extends Item {
     }
 
     private void buckPlayer(Player player, Entity playerMount) {
+        playerMount.ejectPassengers();
         if(player.isPassenger()) {
             return;
         }
@@ -195,6 +198,11 @@ public class WhipItem extends Item {
     private void activateWhipSound(Entity entity) {
         entity.level().playSeededSound(null, entity.getX(), entity.getY(), entity.getZ(),
                 ModSounds.WHIP_CRACKED.get(), SoundSource.BLOCKS, 1f, getVariablePitch(0.4f) - 0.4f, 0);
+    }
+
+    private void activateFrenzySound(Entity entity) {
+        entity.level().playSeededSound(null, entity.getX(), entity.getY(), entity.getZ(),
+                ModSounds.WHIP_FRENZY.get(), SoundSource.BLOCKS, 1.7f, 1f, 0);
     }
 
     private void addMotion(Entity entity) {
@@ -214,6 +222,76 @@ public class WhipItem extends Item {
         entity.setDeltaMovement(newMotion);
     }
 
+    private void addVariableEffect(Entity entity, Player player, int duration) {
+        int state = ModMethods.getWhipState(entity);
+        removeEffects(entity);
+
+        switch (state) {
+            case -1:
+                addSpeed(entity, fastAmplifier, duration);
+                if(displayState) {
+                    player.displayClientMessage(Component.literal("Fast").withStyle(ChatFormatting.GREEN), true);
+                }
+                break;
+            case 0:
+                addSpeed(entity, ultraFastAmplifier, duration);
+                addHaste(entity, 1, durationOfCompoundEffect);
+                doBuckChance(entity,  player, 80, 40, false);
+                if(displayState) {
+                    player.displayClientMessage(Component.literal("Ultra Fast").withStyle(ChatFormatting.YELLOW), true);
+                }
+
+                break;
+            case 1:
+                addSpeed(entity, frenzyAmplifier, duration);
+                addHaste(entity, 1, durationOfCompoundEffect);
+                addLuck(entity, 1, durationOfCompoundEffect);
+                doBuckChance(entity,  player, 10, 5, false);
+                if(displayState) {
+                    player.displayClientMessage(Component.literal("Frenzy").withStyle(ChatFormatting.DARK_RED), true);
+                }
+
+                break;
+            case 2:
+                addSpeed(entity, frenzyAmplifier, duration);
+                addHaste(entity, 1, duration);
+                addLuck(entity, 1, duration);
+                doBuckChance(entity, player, 3, 4, true);
+                if(displayState) {
+                    player.displayClientMessage(Component.literal("Frenzy").withStyle(ChatFormatting.RED), true);
+                }
+                break;
+        }
+
+    }
+
+    private void doBuckChance(Entity entity, Player player, int bound, int fauxBound, boolean fauxDamage) {
+        int randInt = random.nextInt(bound);
+        int randInt2 = 0;
+        if (randInt == 0) {
+            buckPlayer(player, entity);
+            if(entity instanceof Horse) {
+                ((Horse) entity).makeMad();
+            }
+            addFrenzied(entity, 1, frenziedCooldownTicks);
+        } else if(fauxDamage) {
+            randInt2 = random.nextInt(fauxBound);
+            if(randInt2 == 0) {
+                doHurt(entity, player, 0.0f);
+            } else if(randInt2 == 1 && entity instanceof Horse) {
+                ((Horse) entity).makeMad();
+            }
+        }
+    }
+
+
+    private void removeEffects(Entity entity) {
+        if(entity instanceof LivingEntity) {
+            LivingEntity livingEntity = ((LivingEntity) entity);
+            livingEntity.removeAllEffects();
+        }
+    }
+
     private void addSpeed(Entity entity, int amplifier, int duration) {
         if(entity instanceof LivingEntity) {
             LivingEntity livingEntity = ((LivingEntity) entity);
@@ -226,7 +304,48 @@ public class WhipItem extends Item {
                     false);
             livingEntity.addEffect(speedEffect);
         }
+    }
 
+    private void addHaste(Entity entity, int amplifier, int duration) {
+        if(entity instanceof LivingEntity) {
+            LivingEntity livingEntity = ((LivingEntity) entity);
+            MobEffectInstance hasteEffect = new MobEffectInstance(
+                    MobEffects.DIG_SPEED,
+                    duration,
+                    amplifier,
+                    false,
+                    false,
+                    false);
+            livingEntity.addEffect(hasteEffect);
+        }
+    }
+
+    private void addLuck(Entity entity, int amplifier, int duration) {
+        if(entity instanceof LivingEntity) {
+            LivingEntity livingEntity = ((LivingEntity) entity);
+            MobEffectInstance luckEffect = new MobEffectInstance(
+                    MobEffects.LUCK,
+                    duration,
+                    amplifier,
+                    false,
+                    false,
+                    false);
+            livingEntity.addEffect(luckEffect);
+        }
+    }
+
+    private void addFrenzied(Entity entity, int amplifier, int duration) {
+        if(entity instanceof LivingEntity) {
+            LivingEntity livingEntity = ((LivingEntity) entity);
+            MobEffectInstance luckEffect = new MobEffectInstance(
+                    MobEffects.DAMAGE_BOOST,
+                    duration,
+                    amplifier,
+                    false,
+                    false,
+                    false);
+            livingEntity.addEffect(luckEffect);
+        }
     }
 
     private float getVariablePitch(float maxVariance) {
@@ -236,11 +355,15 @@ public class WhipItem extends Item {
 
     private void updateValuesFromConfig() {
         cooldownTicks = RidingUtilsCommonConfigs.whipCooldownTicks.get();
+        frenziedCooldownTicks = RidingUtilsCommonConfigs.frenziedCooldownTicks.get();
         waterCooldownTicks = RidingUtilsCommonConfigs.whipWaterCooldownTicks.get();
         damageCheck = RidingUtilsCommonConfigs.whipDangerStart.get();
         durationOfEffect = RidingUtilsCommonConfigs.whipEffectDuration.get();
+        durationOfCompoundEffect = RidingUtilsCommonConfigs.whipCompoundEffectDuration.get();
         doBuckPlayer = RidingUtilsCommonConfigs.whipBuck.get();
-        showDamage = RidingUtilsCommonConfigs.whipShowsDamage.get();
-        effectAmplifier = RidingUtilsCommonConfigs.whipControllableSpeedAmplifier.get();
+        fastAmplifier = RidingUtilsCommonConfigs.whipFastSpeedAmplifier.get();
+        ultraFastAmplifier = RidingUtilsCommonConfigs.whipUltraFastSpeedAmplifier.get();
+        frenzyAmplifier = RidingUtilsCommonConfigs.whipFrenzySpeedAmplifier.get();
+        displayState = RidingUtilsCommonConfigs.displayState.get();
     }
 }

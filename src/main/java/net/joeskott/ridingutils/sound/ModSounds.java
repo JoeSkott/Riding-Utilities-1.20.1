@@ -15,7 +15,7 @@ public class ModSounds {
 
     // Register sounds
     public static final RegistryObject<SoundEvent> WHIP_CRACKED = registerSoundEvents("whip_cracked");
-
+    public static final RegistryObject<SoundEvent> WHIP_FRENZY = registerSoundEvents("whip_frenzy");
 
 
 

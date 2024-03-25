@@ -3,6 +3,7 @@ package net.joeskott.ridingutils.world;
 
 import net.joeskott.ridingutils.RidingUtils;
 import net.joeskott.ridingutils.config.RidingUtilsCommonConfigs;
+import net.joeskott.ridingutils.resource.ModMethods;
 import net.minecraft.core.BlockPos;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Mth;
@@ -23,9 +24,14 @@ import static java.lang.Math.round;
 public class ModWorldEvents {
     static Random random = new Random();
 
+    private static final int erraticChance = 20;
+
     @SubscribeEvent
     public static void playerTick(final TickEvent.PlayerTickEvent event) {
         Boolean horsesSwim = RidingUtilsCommonConfigs.horsesSwimNaturally.get();
+        Boolean erraticFrenzy = RidingUtilsCommonConfigs.whipFrenzyErratic.get();
+        Boolean displayEntityCooldownMessage = RidingUtilsCommonConfigs.displayEntityCooldownMessage.get();
+        //Boolean horsesSwimFastWithWhip = RidingUtilsCommonConfigs.whipCausesHorseContinuousSwimming.get();
 
         if(event.phase == TickEvent.Phase.END && horsesSwim) {
             Player player = event.player;
@@ -36,7 +42,37 @@ public class ModWorldEvents {
 
             Entity playerMount = player.getVehicle();
 
-            // If it's not a horse, it won't work
+            int state = ModMethods.getWhipState(playerMount);
+
+            // Before doing anything, we apply erratic motion is applicable
+            if(erraticFrenzy && state > 1) {
+                applyErraticFrenzy(playerMount);
+            }
+
+            // Apply steady swim speed based on state
+            // Disabled for now
+            //if(horsesSwimFastWithWhip && playerMount.isInWater()) {
+            //    switch (state) {
+            //        case 0 -> applySteadySwimSpeed(playerMount, 0.001D);
+            //        case 1 -> applySteadySwimSpeed(playerMount, 0.002D);
+            //        case 2 -> applySteadySwimSpeed(playerMount, 0.003D);
+            //    }
+            //}
+
+            if(ModMethods.hasFrenziedEffect(playerMount)) {
+                playerMount.ejectPassengers();
+                if(playerMount instanceof Horse) {
+                    ((Horse) playerMount).makeMad();
+                }
+                //if(displayEntityCooldownMessage) {
+                //    ModMethods.displayCantRideActionBarMessage(playerMount, player, ChatFormatting.GOLD);
+                //}
+            }
+
+
+
+            // If it's not a horse, it won't work, so we don't proceed with
+            // water swim tech
             if(!(playerMount instanceof Horse)){
                 return;
             }
@@ -78,6 +114,42 @@ public class ModWorldEvents {
                 playerMount.setDeltaMovement(newVelocity);
             }
         }
+    }
+
+    private static void applySteadySwimSpeed(Entity entity, double additiveMultiplier) {
+        Vec3 currentVelocity = entity.getDeltaMovement();
+        Vec3 lookAngle = entity.getLookAngle();
+        double movementMultiplier = 0.2D;
+        double addX = lookAngle.x * movementMultiplier;
+        double addZ = lookAngle.z * movementMultiplier;
+        Vec3 newVelocity = new Vec3(currentVelocity.x + addX, currentVelocity.y, currentVelocity.z + addZ);
+        entity.setDeltaMovement(newVelocity);
+    }
+
+    private static void applyErraticFrenzy(Entity entity) {
+
+        int roll = random.nextInt(erraticChance);
+        if(roll != 0) {
+            return;
+        }
+
+        double movementMultiplier = 0.15D;
+
+        Vec3 currentVelocity = entity.getDeltaMovement();
+        Vec3 lookAngle = entity.getLookAngle();
+        double addX = (lookAngle.x + random.nextDouble(4.0D) - 2.0D) * movementMultiplier;
+        double addY = (lookAngle.y + random.nextDouble(1.0D) - 0.5D) * movementMultiplier;
+        double addZ = (lookAngle.z + random.nextDouble(4.0D) - 2.0D) * movementMultiplier;
+
+        // on ground check for y so behavior isn't crazy in the air
+        if(!entity.onGround()) {
+            addY = 0.0D;
+        }
+
+        Vec3 newVelocity = new Vec3(currentVelocity.x + addX, currentVelocity.y + addY, currentVelocity.z + addZ);
+        entity.setDeltaMovement(newVelocity);
+
+
     }
 
     private static double getSine(long time, double range) {

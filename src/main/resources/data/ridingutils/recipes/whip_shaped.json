@@ -3,7 +3,7 @@
   "category": "misc",
   "pattern": [
     "# D",
-    "LRL",
+    " SL",
     "SLS"
   ],
   "key": {
@@ -15,9 +15,6 @@
     },
     "#": {
       "item": "minecraft:rabbit_hide"
-    },
-    "R": {
-      "item": "minecraft:lead"
     },
     "D": {
       "item": "minecraft:diamond"
