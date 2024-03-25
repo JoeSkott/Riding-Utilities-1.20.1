@@ -99,8 +99,8 @@ public class RidingUtilsCommonConfigs {
         displayEntityCooldownMessage = BUILDER.comment("Display the cooldown message when the entity doesn't want to be ridden (Defaults to true)")
                 .define("Display Entity Cooldown Message", true);
 
-        displayState = BUILDER.comment("Display the current speed state? (Defaults to true)")
-                .define("Display Speed State", true);
+        displayState = BUILDER.comment("Display the current speed state? (Defaults to false)")
+                .define("Display Speed State", false);
 
         horsesSwimNaturally = BUILDER.comment("Do horses naturally swim in water (even lava) when they have a rider? (Defaults to true)")
                 .define("Horses Swim Naturally", true);
