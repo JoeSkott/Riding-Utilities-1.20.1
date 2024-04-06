@@ -18,7 +18,7 @@ public class ModItems {
             () -> new LassoItem(new Item.Properties().durability(64)));
 
     public static final RegistryObject<Item> WHIP = ITEMS.register("whip",
-            () -> new WhipItem(new Item.Properties().durability(512)));
+            () -> new WhipItem(new Item.Properties().durability(128)));
 
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);

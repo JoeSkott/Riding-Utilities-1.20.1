@@ -216,6 +216,10 @@ public class LassoItem extends Item {
         // Interaction Start
         if(!pPlayer.level().isClientSide()) {
             if(!pPlayer.isPassenger()) {
+                // Cancel interaction if player
+                if(pInteractionTarget instanceof Player) {
+                    return super.interactLivingEntity(pStack, pPlayer, pInteractionTarget, pUsedHand);
+                }
 
                 if(ModMethods.getWhipState(pInteractionTarget) >= 2) {
                     if(displayEntityCooldownMessage) {
