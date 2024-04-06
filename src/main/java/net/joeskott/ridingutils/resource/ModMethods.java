@@ -60,6 +60,8 @@ public class ModMethods {
         return false;
     }
 
+
+
     public static int getWhipState (Entity entity) {
         boolean lockSpeedState = RidingUtilsCommonConfigs.disabledSpeedStates.get();
         // If we're only doing one state, keep it at one state at all times

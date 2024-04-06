@@ -30,6 +30,7 @@ public class ModWorldEvents {
     public static void playerTick(final TickEvent.PlayerTickEvent event) {
         Boolean horsesSwim = RidingUtilsCommonConfigs.horsesSwimNaturally.get();
         Boolean erraticFrenzy = RidingUtilsCommonConfigs.whipFrenzyErratic.get();
+        int ejectChance = 250;
         Boolean displayEntityCooldownMessage = RidingUtilsCommonConfigs.displayEntityCooldownMessage.get();
         //Boolean horsesSwimFastWithWhip = RidingUtilsCommonConfigs.whipCausesHorseContinuousSwimming.get();
 
@@ -49,25 +50,16 @@ public class ModWorldEvents {
                 applyErraticFrenzy(playerMount);
             }
 
-            // Apply steady swim speed based on state
-            // Disabled for now
-            //if(horsesSwimFastWithWhip && playerMount.isInWater()) {
-            //    switch (state) {
-            //        case 0 -> applySteadySwimSpeed(playerMount, 0.001D);
-            //        case 1 -> applySteadySwimSpeed(playerMount, 0.002D);
-            //        case 2 -> applySteadySwimSpeed(playerMount, 0.003D);
-            //    }
-            //}
-
-            if(ModMethods.hasFrenziedEffect(playerMount)) {
-                playerMount.ejectPassengers();
-                if(playerMount instanceof Horse) {
-                    ((Horse) playerMount).makeMad();
+            // Eject if Frenzy
+            if(!player.level().isClientSide()) {
+                if(ModMethods.getWhipState(playerMount) >= 2 && random.nextInt(ejectChance) == 0) {
+                    playerMount.ejectPassengers();
+                    if(playerMount instanceof Horse) {
+                        ((Horse) playerMount).makeMad();
+                    }
                 }
-                //if(displayEntityCooldownMessage) {
-                //    ModMethods.displayCantRideActionBarMessage(playerMount, player, ChatFormatting.GOLD);
-                //}
             }
+
 
 
 

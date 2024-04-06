@@ -100,10 +100,11 @@ public class LassoItem extends Item {
 
     private void addMotion(Player player, Entity playerMount) {
 
-        boolean climbingMob = (playerMount instanceof Spider);
+        //boolean climbingMob = (playerMount instanceof Spider);
 
-        if(getBlockCollision(playerMount)) {
-            addJumpMotion(player, playerMount, climbingMob);
+        // Replacement for Jumping
+        if (playerMount.getStepHeight() < 1.0f) {
+            playerMount.setMaxUpStep(1.0f);
         }
 
         Vec3 lookAngle = player.getLookAngle();
@@ -113,9 +114,9 @@ public class LassoItem extends Item {
         boolean inWater = playerMount.isInWater();
         boolean canFly = (playerMount instanceof FlyingMob);
 
-        // If we're not in the ground or in water (and not a flying or climbing mod)
+        // If we're not in the ground or in water (and not a flying mob)
         // we cancel movement
-        if((offGround || inWater) && !canFly && !climbingMob) {
+        if((offGround || inWater) && !canFly) {
             return;
         }
 
@@ -166,9 +167,6 @@ public class LassoItem extends Item {
 
         playerMount.setDeltaMovement(newMotion);
         setLookAngle(playerMount, player);
-
-
-
     }
 
     private void addJumpMotion(Player player, Entity playerMount, boolean climbingMob) {
@@ -195,8 +193,6 @@ public class LassoItem extends Item {
         BlockPos collidePos = entity.blockPosition().above();
         BlockState blockState = entity.level().getBlockState(collidePos);
         return blockState.isSolid();
-        //return blockState.isSolidRender(entity.level(), collidePos);
-        //return !blockState.isAir();
     }
 
     private boolean getBlockCollision(Entity entity) {
