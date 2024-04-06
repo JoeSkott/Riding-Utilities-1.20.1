@@ -63,6 +63,11 @@ public class LassoItem extends Item {
             ItemStack itemSelf = pPlayer.getItemInHand(pUsedHand);
             ItemStack itemOffhand = pPlayer.getOffhandItem();
 
+            // Cancel if player
+            if(playerMount instanceof Player) {
+                return super.use(pLevel, pPlayer, pUsedHand);
+            }
+
             boolean offhandIsWhip = itemOffhand.is(ModItems.WHIP.get());
             boolean offhandIsSelf = itemOffhand.is(this);
             boolean isControllable = playerMount instanceof Saddleable;
@@ -216,8 +221,8 @@ public class LassoItem extends Item {
         // Interaction Start
         if(!pPlayer.level().isClientSide()) {
             if(!pPlayer.isPassenger()) {
-                // Cancel interaction if player
-                if(pInteractionTarget instanceof Player) {
+                // Cancel interaction if player or if crouching
+                if(pInteractionTarget instanceof Player || pPlayer.isCrouching()) {
                     return super.interactLivingEntity(pStack, pPlayer, pInteractionTarget, pUsedHand);
                 }
 
