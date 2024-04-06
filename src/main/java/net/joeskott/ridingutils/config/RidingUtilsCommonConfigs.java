@@ -59,14 +59,14 @@ public class RidingUtilsCommonConfigs {
         lassoWhipUltraFastSpeedBoost = BUILDER.comment("Speed multiplier for when using the lasso with applied whip speed at stage 1 (Defaults to 1.5)")
                 .defineInRange("Lasso Whip Ultra Fast Speed Boost", 1.5, 0.1, 3.0);
 
-        lassoWhipFrenzySpeedBoost = BUILDER.comment("Speed multiplier for when using the lasso with applied whip speed at stage 2 (Defaults to 2.0)")
-                .defineInRange("Lasso Whip Ultra Fast Speed Boost", 2.0, 0.1, 3.0);
+        lassoWhipFrenzySpeedBoost = BUILDER.comment("Speed multiplier for when using the lasso with applied whip speed at stage 2 (Defaults to 1.8)")
+                .defineInRange("Lasso Whip Frenzy Speed Boost", 1.8, 0.1, 3.0);
 
 
         whipEffectDuration = BUILDER.comment("How long does the speed boost last? (Defaults to 160 ticks or 8 seconds)")
                 .defineInRange("Whip Speed Duration", 160, 1, 99999999);
 
-        whipCompoundEffectDuration = BUILDER.comment("This is the period after using the whip that repeat usage will increase speed (Defaults to 75 ticks or 3.75 seconds)")
+        whipCompoundEffectDuration = BUILDER.comment("This is the period after using the whip that repeat usage will increase speed (Defaults to 95 ticks or 4.75 seconds)")
                 .defineInRange("Whip Compound Speed Duration", 95, 1, 99999999);
 
         whipFastSpeedAmplifier = BUILDER.comment("Fast speed amplifier for default controllable mobs (Defaults to 2)")
