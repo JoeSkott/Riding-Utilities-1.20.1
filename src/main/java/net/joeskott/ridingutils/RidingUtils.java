@@ -4,6 +4,7 @@ import com.mojang.logging.LogUtils;
 import net.joeskott.ridingutils.config.RidingUtilsClientConfigs;
 import net.joeskott.ridingutils.config.RidingUtilsCommonConfigs;
 import net.joeskott.ridingutils.effect.ModEffects;
+import net.joeskott.ridingutils.item.ModCreativeModeTab;
 import net.joeskott.ridingutils.item.ModItems;
 import net.joeskott.ridingutils.sound.ModSounds;
 import net.minecraft.world.item.CreativeModeTabs;
@@ -21,7 +22,6 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.slf4j.Logger;
 
-// The value here should match an entry in the META-INF/mods.toml file
 @Mod(RidingUtils.MOD_ID)
 public class RidingUtils
 {
@@ -37,6 +37,8 @@ public class RidingUtils
         //ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, RidingUtilsClientConfigs.SPEC, "ridingutilities-client.toml");
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, RidingUtilsCommonConfigs.SPEC, "ridingutilities-common.toml");
 
+        // Creative Tab
+        ModCreativeModeTab.register(modEventBus);
 
         // Register Items
         ModItems.register(modEventBus);
@@ -57,21 +59,14 @@ public class RidingUtils
 
     }
 
-    // Add the example block item to the building blocks tab
     private void addCreative(BuildCreativeModeTabContentsEvent event) {
-        if(event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
-            event.accept(ModItems.LASSO);
-            event.accept(ModItems.WHIP);
-        }
     }
 
-    // You can use SubscribeEvent and let the Event Bus discover methods to call
     @SubscribeEvent
     public void onServerStarting(ServerStartingEvent event) {
 
     }
 
-    // You can use EventBusSubscriber to automatically register all static methods in the class annotated with @SubscribeEvent
     @Mod.EventBusSubscriber(modid = MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
     public static class ClientModEvents {
         @SubscribeEvent

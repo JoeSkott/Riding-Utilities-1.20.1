@@ -7,5 +7,7 @@
 
   "effect.ridingutils.whip_speed": "Whip Speed",
   "effect.ridingutils.compound_speed": "Compound Speed",
-  "effect.ridingutils.horse_eject": "Horse Eject"
+  "effect.ridingutils.horse_eject": "Horse Eject",
+
+  "creativetab.ridingutils_tab": "Riding Utilities"
 }
