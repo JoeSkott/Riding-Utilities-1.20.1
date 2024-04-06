@@ -3,6 +3,7 @@ package net.joeskott.ridingutils;
 import com.mojang.logging.LogUtils;
 import net.joeskott.ridingutils.config.RidingUtilsClientConfigs;
 import net.joeskott.ridingutils.config.RidingUtilsCommonConfigs;
+import net.joeskott.ridingutils.effect.ModEffects;
 import net.joeskott.ridingutils.item.ModItems;
 import net.joeskott.ridingutils.sound.ModSounds;
 import net.minecraft.world.item.CreativeModeTabs;
@@ -42,6 +43,9 @@ public class RidingUtils
 
         // Register Sounds
         ModSounds.register(modEventBus);
+
+        // Register Effects
+        ModEffects.register(modEventBus);
 
         modEventBus.addListener(this::commonSetup);
 
