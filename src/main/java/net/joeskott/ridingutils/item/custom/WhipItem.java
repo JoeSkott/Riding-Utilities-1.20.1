@@ -1,6 +1,7 @@
 package net.joeskott.ridingutils.item.custom;
 
 import net.joeskott.ridingutils.config.RidingUtilsCommonConfigs;
+import net.joeskott.ridingutils.effect.ModEffects;
 import net.joeskott.ridingutils.item.ModItems;
 import net.joeskott.ridingutils.resource.ModMethods;
 import net.joeskott.ridingutils.sound.ModSounds;
@@ -228,14 +229,14 @@ public class WhipItem extends Item {
 
         switch (state) {
             case -1:
-                addSpeed(entity, fastAmplifier, duration);
+                addWhipSpeedEffect(entity, fastAmplifier, duration);
                 if(displayState) {
                     player.displayClientMessage(Component.literal("Fast").withStyle(ChatFormatting.GREEN), true);
                 }
                 break;
             case 0:
-                addSpeed(entity, ultraFastAmplifier, duration);
-                addHaste(entity, 1, durationOfCompoundEffect);
+                addWhipSpeedEffect(entity, ultraFastAmplifier, duration);
+                addCompoundSpeedEffect(entity, 1, durationOfCompoundEffect);
                 doBuckChance(entity,  player, 80, 40, false);
                 if(displayState) {
                     player.displayClientMessage(Component.literal("Ultra Fast").withStyle(ChatFormatting.YELLOW), true);
@@ -243,9 +244,8 @@ public class WhipItem extends Item {
 
                 break;
             case 1:
-                addSpeed(entity, frenzyAmplifier, duration);
-                addHaste(entity, 1, durationOfCompoundEffect);
-                addLuck(entity, 1, durationOfCompoundEffect);
+                addWhipSpeedEffect(entity, frenzyAmplifier, duration);
+                addCompoundSpeedEffect(entity, 1, durationOfCompoundEffect);
                 doBuckChance(entity,  player, 10, 5, false);
                 if(displayState) {
                     player.displayClientMessage(Component.literal("Frenzy").withStyle(ChatFormatting.DARK_RED), true);
@@ -253,9 +253,9 @@ public class WhipItem extends Item {
 
                 break;
             case 2:
-                addSpeed(entity, frenzyAmplifier, duration);
-                addHaste(entity, 1, duration);
-                addLuck(entity, 1, duration);
+                addWhipSpeedEffect(entity, frenzyAmplifier, duration);
+                addCompoundSpeedEffect(entity, 1, duration);
+                ModMethods.addHorseEjectEffect(entity, 1, duration);
                 doBuckChance(entity, player, 3, 4, true);
                 if(displayState) {
                     player.displayClientMessage(Component.literal("Frenzy").withStyle(ChatFormatting.RED), true);
@@ -273,7 +273,8 @@ public class WhipItem extends Item {
             if(entity instanceof Horse) {
                 ((Horse) entity).makeMad();
             }
-            addFrenzied(entity, 1, frenziedCooldownTicks);
+            addCompoundSpeedEffect(entity, 1, frenziedCooldownTicks);
+            ModMethods.addHorseEjectEffect(entity, 1, frenziedCooldownTicks);
         } else if(fauxDamage) {
             randInt2 = random.nextInt(fauxBound);
             if(randInt2 == 0) {
@@ -292,61 +293,34 @@ public class WhipItem extends Item {
         }
     }
 
-    private void addSpeed(Entity entity, int amplifier, int duration) {
+    private void addWhipSpeedEffect(Entity entity, int amplifier, int duration) {
         if(entity instanceof LivingEntity) {
             LivingEntity livingEntity = ((LivingEntity) entity);
-            MobEffectInstance speedEffect = new MobEffectInstance(
-                    MobEffects.MOVEMENT_SPEED,
+            MobEffectInstance whipSpeedEffect = new MobEffectInstance(
+                    ModEffects.WHIP_SPEED.get(),
                     duration,
                     amplifier,
                     false,
                     false,
                     false);
-            livingEntity.addEffect(speedEffect);
+            livingEntity.addEffect(whipSpeedEffect);
         }
     }
 
-    private void addHaste(Entity entity, int amplifier, int duration) {
+    private void addCompoundSpeedEffect(Entity entity, int amplifier, int duration) {
         if(entity instanceof LivingEntity) {
             LivingEntity livingEntity = ((LivingEntity) entity);
-            MobEffectInstance hasteEffect = new MobEffectInstance(
-                    MobEffects.DIG_SPEED,
+            MobEffectInstance compoundSpeedEffect = new MobEffectInstance(
+                    ModEffects.COMPOUND_SPEED.get(),
                     duration,
                     amplifier,
                     false,
                     false,
                     false);
-            livingEntity.addEffect(hasteEffect);
+            livingEntity.addEffect(compoundSpeedEffect);
         }
     }
 
-    private void addLuck(Entity entity, int amplifier, int duration) {
-        if(entity instanceof LivingEntity) {
-            LivingEntity livingEntity = ((LivingEntity) entity);
-            MobEffectInstance luckEffect = new MobEffectInstance(
-                    MobEffects.LUCK,
-                    duration,
-                    amplifier,
-                    false,
-                    false,
-                    false);
-            livingEntity.addEffect(luckEffect);
-        }
-    }
-
-    private void addFrenzied(Entity entity, int amplifier, int duration) {
-        if(entity instanceof LivingEntity) {
-            LivingEntity livingEntity = ((LivingEntity) entity);
-            MobEffectInstance luckEffect = new MobEffectInstance(
-                    MobEffects.DAMAGE_BOOST,
-                    duration,
-                    amplifier,
-                    false,
-                    false,
-                    false);
-            livingEntity.addEffect(luckEffect);
-        }
-    }
 
     private float getVariablePitch(float maxVariance) {
         float pitchAdjust = random.nextFloat(maxVariance) - random.nextFloat(maxVariance);

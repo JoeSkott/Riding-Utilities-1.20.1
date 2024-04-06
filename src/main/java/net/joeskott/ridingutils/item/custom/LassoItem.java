@@ -217,7 +217,7 @@ public class LassoItem extends Item {
         if(!pPlayer.level().isClientSide()) {
             if(!pPlayer.isPassenger()) {
 
-                if(ModMethods.hasFrenziedEffect(pInteractionTarget)) {
+                if(ModMethods.getWhipState(pInteractionTarget) >= 2) {
                     if(displayEntityCooldownMessage) {
                         ModMethods.displayCantRideActionBarMessage(pInteractionTarget, pPlayer, ChatFormatting.GOLD);
                     }

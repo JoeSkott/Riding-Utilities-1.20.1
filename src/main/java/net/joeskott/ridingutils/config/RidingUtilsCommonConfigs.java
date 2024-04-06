@@ -43,9 +43,9 @@ public class RidingUtilsCommonConfigs {
 
     public static ForgeConfigSpec.BooleanValue horsesSwimNaturally;
 
-    //public static ForgeConfigSpec.BooleanValue whipCausesHorseContinuousSwimming;
-
     public static ForgeConfigSpec.ConfigValue<Boolean> disabledSpeedStates;
+
+    public static ForgeConfigSpec.ConfigValue<Boolean> enableRiledUpParticles;
 
     static {
         BUILDER.push("Configs for Riding Utilities");
@@ -105,11 +105,11 @@ public class RidingUtilsCommonConfigs {
         horsesSwimNaturally = BUILDER.comment("Do horses naturally swim in water (even lava) when they have a rider? (Defaults to true)")
                 .define("Horses Swim Naturally", true);
 
-        //whipCausesHorseContinuousSwimming = BUILDER.comment("Do horses move faster and also on their own in water when using the whip? (Defaults to true)")
-        //        .define("Horses Swim Automagically", true);
-
         disabledSpeedStates = BUILDER.comment("If true, locks the speed states to only one state (Defaults to false)")
                 .define("Disabled Speed States", false);
+
+        enableRiledUpParticles = BUILDER.comment("If true, displays particles when you can't mount an entity when it's riled up (Defaults to false)")
+                .define("Enable Riled Up Particles", false);
 
         BUILDER.pop();
         SPEC = BUILDER.build();

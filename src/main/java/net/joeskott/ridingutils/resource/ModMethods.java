@@ -1,9 +1,11 @@
 package net.joeskott.ridingutils.resource;
 
 import net.joeskott.ridingutils.config.RidingUtilsCommonConfigs;
+import net.joeskott.ridingutils.effect.ModEffects;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -28,36 +30,39 @@ public class ModMethods {
         );
     }
 
-    public static boolean hasSpeedEffect(Entity entity) {
+//    public static boolean hasFrenziedEffect(Entity entity) {
+//        if(entity instanceof LivingEntity) {
+//            LivingEntity livingEntity = (LivingEntity) entity;
+//            return livingEntity.hasEffect(MobEffects.DAMAGE_BOOST);
+//        }
+//        return false;
+//    }
+
+    public static boolean hasCompoundSpeedEffect(Entity entity) {
         if(entity instanceof LivingEntity) {
             LivingEntity livingEntity = (LivingEntity) entity;
-            return livingEntity.hasEffect(MobEffects.MOVEMENT_SPEED);
+            return livingEntity.hasEffect(ModEffects.COMPOUND_SPEED.get());
         }
         return false;
     }
 
-    public static boolean hasHasteEffect(Entity entity) {
+    public static boolean hasHorseEjectEffect(Entity entity) {
         if(entity instanceof LivingEntity) {
             LivingEntity livingEntity = (LivingEntity) entity;
-            return livingEntity.hasEffect(MobEffects.DIG_SPEED);
+            return livingEntity.hasEffect(ModEffects.HORSE_EJECT.get());
         }
         return false;
     }
 
-    public static boolean hasLuckEffect(Entity entity) {
+    public static int hasWhipSpeedEffectLevel(Entity entity) {
         if(entity instanceof LivingEntity) {
             LivingEntity livingEntity = (LivingEntity) entity;
-            return livingEntity.hasEffect(MobEffects.LUCK);
+            if (!livingEntity.hasEffect(ModEffects.WHIP_SPEED.get())) {
+                return -1;
+            }
+            return livingEntity.getEffect(ModEffects.WHIP_SPEED.get()).getAmplifier();
         }
-        return false;
-    }
-
-    public static boolean hasFrenziedEffect(Entity entity) {
-        if(entity instanceof LivingEntity) {
-            LivingEntity livingEntity = (LivingEntity) entity;
-            return livingEntity.hasEffect(MobEffects.DAMAGE_BOOST);
-        }
-        return false;
+        return -1;
     }
 
 
@@ -68,18 +73,53 @@ public class ModMethods {
         if(lockSpeedState) {
             return -1;
         }
-        boolean speedEffect = ModMethods.hasSpeedEffect(entity);
-        boolean hasteEffect = ModMethods.hasHasteEffect(entity);
-        boolean luckEffect = ModMethods.hasLuckEffect(entity);
 
-        if (speedEffect && !hasteEffect && !luckEffect) {
+        int effectLevel = hasWhipSpeedEffectLevel(entity);
+
+        boolean levelNone = effectLevel <= -1;
+        boolean level0 = effectLevel <= RidingUtilsCommonConfigs.whipFastSpeedAmplifier.get();
+        boolean level1 = effectLevel <= RidingUtilsCommonConfigs.whipUltraFastSpeedAmplifier.get();
+        boolean level2 = effectLevel > RidingUtilsCommonConfigs.whipUltraFastSpeedAmplifier.get();
+
+        boolean compoundedSpeed = hasCompoundSpeedEffect(entity);
+
+        if (levelNone) {
+            return -1;
+        }
+
+        if (level0 && compoundedSpeed) {
             return 0;
-        } else if (speedEffect && hasteEffect && !luckEffect) {
+        }
+
+        if (level1) {
+            if(!compoundedSpeed) {
+                return 0;
+            }
             return 1;
-        } else if (speedEffect && hasteEffect && luckEffect) {
+        }
+
+        if (level2) {
+            if(!compoundedSpeed) {
+                return 1;
+            }
             return 2;
         }
+
         return -1;
+    }
+
+    public static void addHorseEjectEffect(Entity entity, int amplifier, int duration) {
+        if(entity instanceof LivingEntity) {
+            LivingEntity livingEntity = ((LivingEntity) entity);
+            MobEffectInstance horseEjectEffect = new MobEffectInstance(
+                    ModEffects.COMPOUND_SPEED.get(),
+                    duration,
+                    amplifier,
+                    false,
+                    RidingUtilsCommonConfigs.enableRiledUpParticles.get(),
+                    false);
+            livingEntity.addEffect(horseEjectEffect);
+        }
     }
 
     public static void displayCantRideActionBarMessage(Entity mount, Player player, ChatFormatting style) {

@@ -52,8 +52,12 @@ public class ModWorldEvents {
 
             // Eject if Frenzy
             if(!player.level().isClientSide()) {
-                if(ModMethods.getWhipState(playerMount) >= 2 && random.nextInt(ejectChance) == 0) {
+                if(ModMethods.hasHorseEjectEffect(playerMount)) {
                     playerMount.ejectPassengers();
+                }
+
+                if(ModMethods.getWhipState(playerMount) >= 2 && random.nextInt(ejectChance) == 0) {
+                    ModMethods.addHorseEjectEffect(playerMount, 1, RidingUtilsCommonConfigs.whipCompoundEffectDuration.get());
                     if(playerMount instanceof Horse) {
                         ((Horse) playerMount).makeMad();
                     }
