@@ -255,7 +255,10 @@ public class WhipItem extends Item {
             case 2:
                 addWhipSpeedEffect(entity, frenzyAmplifier, duration);
                 addCompoundSpeedEffect(entity, 1, duration);
-                ModMethods.addHorseEjectEffect(entity, 1, duration);
+                // Add particle effects only if it's not a horse
+                if (!(entity instanceof Horse)) {
+                    ModMethods.addHorseEjectEffect(entity, 1, duration);
+                }
                 doBuckChance(entity, player, 3, 4, true);
                 if(displayState) {
                     player.displayClientMessage(Component.literal("Frenzy").withStyle(ChatFormatting.RED), true);

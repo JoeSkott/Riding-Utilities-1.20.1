@@ -77,7 +77,7 @@ public class ModWorldEvents {
             float roll = random.nextFloat(1.0f);
 
             // If in water and swimming
-            if(playerMount.isInWater() && shouldSwim(playerMount, player) && getBlockCollision(playerMount, true)) {
+            if(playerMount.isInWater() && shouldSwim(playerMount, player) && !getLiquidBelow(playerMount, true)) {//getBlockCollision(playerMount, true)) {
                 Vec3 currentVelocity = playerMount.getDeltaMovement();
 
                 double upVelocity = 0.3d;
@@ -110,16 +110,6 @@ public class ModWorldEvents {
                 playerMount.setDeltaMovement(newVelocity);
             }
         }
-    }
-
-    private static void applySteadySwimSpeed(Entity entity, double additiveMultiplier) {
-        Vec3 currentVelocity = entity.getDeltaMovement();
-        Vec3 lookAngle = entity.getLookAngle();
-        double movementMultiplier = 0.2D;
-        double addX = lookAngle.x * movementMultiplier;
-        double addZ = lookAngle.z * movementMultiplier;
-        Vec3 newVelocity = new Vec3(currentVelocity.x + addX, currentVelocity.y, currentVelocity.z + addZ);
-        entity.setDeltaMovement(newVelocity);
     }
 
     private static void applyErraticFrenzy(Entity entity) {
